@@ -1,33 +1,32 @@
-void setup()
-{
-  pinMode(A0, INPUT);
+const int led1 = 13;
+const int led2 = 12;
+const int led3 = 11;
+const int sensor = 2;
+
+void setup() {
   Serial.begin(9600);
-  pinMode(13, OUTPUT);
-  pinMode(12, OUTPUT);
-  pinMode(11, OUTPUT);
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(sensor, INPUT);
+  attachInterrupt(digitalPinToInterrupt(sensor), detectMotion, CHANGE);
 }
 
-void loop()
-{
-  int temp = analogRead(A0);
-  float voltage = temp * 5.0;
-  voltage /= 1024.0;
-  temp = (voltage - 0.5) * 100;
-  Serial.println("Temperature: " + String(temp) + " Celsius");
-  if (temp > 0) {
-    digitalWrite(13, HIGH);
+void loop() {
+  delay(200);
+}
+
+void detectMotion() {
+  int state = digitalRead(sensor);
+  if (state == HIGH) {
+    Serial.println("Motion detected");
+    digitalWrite(led1, HIGH);
+    digitalWrite(led2, HIGH);
+    digitalWrite(led3, HIGH);
   } else {
-    digitalWrite(13, LOW);
+    Serial.println("No motion");
+    digitalWrite(led1, LOW);
+    digitalWrite(led2, LOW);
+    digitalWrite(led3, LOW);
   }
-  if (temp > 40) {
-    digitalWrite(12, HIGH);
-  } else {
-    digitalWrite(12, LOW);
-  }
-  if (temp > 80) {
-    digitalWrite(11, HIGH);
-  } else {
-    digitalWrite(11, LOW);
-  }
-  delay(1000); // Delay a little bit to improve simulation performance
 }
